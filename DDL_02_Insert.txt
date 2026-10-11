@@ -1,0 +1,137 @@
+-- ============================================================================
+-- POPOLAMENTO DATI DI TEST (VERSIONE 1.5)
+-- Ordine di esecuzione rispettoso delle Foreign Key
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 1. SITO (Nessuna dipendenza)
+-- ----------------------------------------------------------------------------
+INSERT INTO sito (localita, stato, data_inizio, data_fine, note) VALUES
+('Pompei - Regio V', 'In corso', '2023-03-01', NULL, 'Area urbana residenziale con evidenze di affreschi'),
+('Ostia Antica - Terme di Nettuno', 'Concluso', '2021-05-15', '2022-11-30', 'Indagine sulle fasi edilizie termali di epoca adrianea'),
+('Roma - Pendici Palatino', 'In corso', '2024-01-10', NULL, 'Scavo pluristratificato: strutture arcaiche e imperiali'),
+('Veio - Santuario di Portonaccio', 'Concluso', '2019-06-01', '2020-10-15', 'Fase etrusca arcaica ed ellenistica'),
+('Ercolano - Villa dei Papiri', 'In corso', '2022-09-01', NULL, 'Trincee esplorative del settore giardino peristilio'),
+('Cerveteri - Necropoli Banditaccia', 'Concluso', '2020-04-10', '2021-09-20', 'Studio dei dromoi e riempimenti tombali'),
+('Paestum - Area Foro', 'In corso', '2023-04-15', NULL, 'Livelli ellenistico-lucani e foro romano'),
+('Tarquinia - Pian della Regina', 'Pianificato', '2025-05-01', NULL, 'Indagine geomagnetica preliminare e futuro saggio');
+
+-- ----------------------------------------------------------------------------
+-- 2. CANTIERE (Dipende da SITO)
+-- ----------------------------------------------------------------------------
+INSERT INTO cantiere (codice, descrizione, data_inizio, data_fine, note, sito_id) VALUES
+('POMP-2023-S1', 'Saggio 1: Atrio della Casa delle Nozze d''Argento', '2023-03-10', NULL, 'Indagine sotto il pavimento a mosaico', 1),
+('POMP-2023-S2', 'Saggio 2: Area retrostante del giardino/peristilio', '2023-04-01', NULL, 'Ricerca di tracce botaniche e crolli 79 d.C.', 1),
+('OST-2021-CALD', 'Settore Calidarium delle Terme', '2021-05-20', '2022-04-10', 'Rimozione dei rifacimenti moderni', 2),
+('OST-2021-PAL', 'Palestra e portico orientale', '2022-04-15', '2022-11-20', 'Pavimentazioni musive e drenaggi', 2),
+('PALAT-2024-T1', 'Trincea Alpha: Terrazzamento repubblicano', '2024-01-15', NULL, 'Fase medio-repubblicana', 3),
+('VEIO-2019-SANT', 'Settore Altare monumentale', '2019-06-10', '2020-10-05', 'Strutture in tufo e depositi votivi', 4),
+('ERCOL-2022-PER', 'Settore Peristilio occidentale', '2022-09-10', NULL, 'Livelli di flusso piroclastico', 5),
+('PAEST-2023-TAB', 'Tabernae del lato nord del Foro', '2023-05-01', NULL, 'Fasi commerciali romane', 7);
+
+-- ----------------------------------------------------------------------------
+-- 3. QUADRANTE (Dipende da CANTIERE - PK composta: cantiere_id, x, y)
+-- ----------------------------------------------------------------------------
+INSERT INTO quadrante (cantiere_id, x, y) VALUES
+(1, 1, 1),
+(1, 1, 2),
+(1, 2, 1),
+(1, 2, 2),
+(2, 10, 15),
+(3, 5, 8),
+(5, 1, 1),
+(5, 1, 2);
+
+-- ----------------------------------------------------------------------------
+-- 4. ARCHEOLOGO (Nessuna dipendenza)
+-- ----------------------------------------------------------------------------
+INSERT INTO archeologo (email, nome, cognome, qualifica, ente_affiliazione, note) VALUES
+('m.rossi@archeo.it', 'Marco', 'Rossi', 'Direttore di Scavo', 'Soprintendenza Archeologia Belle Arti', 'Specialista in età romana repubblicana'),
+('g.bianchi@uniroma.it', 'Giulia', 'Bianchi', 'Ricercatrice / Topografa', 'Sapienza Università di Roma', 'Esperta rilievo e stratigrafia urbana'),
+('l.verdi@cnr.it', 'Luca', 'Verdi', 'Archeologo di campo', 'CNR - ISPC', 'Addetto al disegno e documentazione grafica'),
+('e.moretti@scavi.org', 'Elena', 'Moretti', 'Dottoranda', 'Università di Napoli Federico II', 'Studio ceramiche e depositi sigillati'),
+('a.ferrari@unibo.it', 'Andrea', 'Ferrari', 'Responsabile Harris Matrix', 'Università di Bologna', 'Analisi stratigrafica complessa'),
+('s.russo@archeopisa.it', 'Sofia', 'Russo', 'Rilevatrice', 'Università di Pisa', 'Specialista strutture murarie (USM)'),
+('f.galli@milano.edu', 'Francesca', 'Galli', 'Archeometra', 'Università degli Studi di Milano', 'Analisi malte e sedimenti'),
+('d.conte@archeolab.com', 'Davide', 'Conte', 'Tecnico GIS / Scavatore', 'ArcheoLab Cooperativa', 'Gestione database e documentazione digitale');
+
+-- ----------------------------------------------------------------------------
+-- 5. MISSIONE (Dipende da CANTIERE)
+-- ----------------------------------------------------------------------------
+INSERT INTO missione (codice, descrizione, data_inizio, data_fine, cantiere_id, apre, chiude) VALUES
+('CAMP-POMP-23-1', 'Campagna Primavera 2023: Apertura saggio e asporto arativo', '2023-03-10', '2023-06-30', 1, TRUE, FALSE),
+('CAMP-POMP-23-2', 'Campagna Autunno 2023: Raggiungimento livelli 79 d.C.', '2023-09-01', '2023-12-15', 1, FALSE, FALSE),
+('CAMP-POMP-24-1', 'Campagna Primavera 2024: Approfondimento sotto-strutture', '2024-03-01', '2024-06-30', 1, FALSE, FALSE),
+('CAMP-OST-21-TOT', 'Campagna Unica 2021: Indagine calidarium', '2021-05-20', '2021-11-15', 3, TRUE, TRUE),
+('CAMP-PALAT-24-1', 'Apertura trincea Palatino e bonifica superficiale', '2024-01-15', '2024-05-30', 5, TRUE, FALSE),
+('CAMP-VEIO-19-1', 'Campagna Santuario 2019: Settore Altare', '2019-06-10', '2019-09-30', 6, TRUE, FALSE),
+('CAMP-VEIO-20-CHIUS', 'Campagna Chiusura 2020: Restauro e rinterro', '2020-07-01', '2020-10-05', 6, FALSE, TRUE),
+('CAMP-PAEST-23-1', 'Campagna Tabernae 2023: Pulizia e prima stratigrafia', '2023-05-01', '2023-08-30', 8, TRUE, FALSE);
+
+-- ----------------------------------------------------------------------------
+-- 6. MISSIONE_ARCHEOLOGO (Dipende da MISSIONE e ARCHEOLOGO)
+-- ----------------------------------------------------------------------------
+INSERT INTO missione_archeologo (missione_id, archeologo_id) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 1),
+(2, 4),
+(3, 5),
+(4, 2),
+(5, 6);
+
+-- ----------------------------------------------------------------------------
+-- 7. UNITA_STRATIGRAFICA (Dipende da CANTIERE e ARCHEOLOGO compilatore)
+-- ----------------------------------------------------------------------------
+INSERT INTO unita_stratigrafica 
+(cantiere_id, numero, data, tipo, stato_conservazione, quota_superiore, quota_inferiore, edificio, stanza, fase, descrizione, interpretazione, archeologo_compilatore_id)
+VALUES
+(1, 101, '2023-03-15', 'US', 'Mediocre', 14.50, 14.30, 'Casa Nozze d''Argento', 'Atrio', 'Moderna', 'Strato superficiale di terreno vegetale misto a detrito', 'Strato di arativo e bonifica superficiale', 2),
+(1, 102, '2023-03-20', 'US', 'Buono', 14.30, 13.80, 'Casa Nozze d''Argento', 'Atrio', 'Eruzione 79 d.C.', 'Deposito compatto di lapilli vulcanici bianchi e grigi', 'Deposito di caduta primaria vesuviana', 2),
+(1, 103, '2023-04-02', 'US', 'Ottimo', 13.80, 13.40, 'Casa Nozze d''Argento', 'Atrio', 'Eruzione 79 d.C.', 'Strato caotico di tegole frantumate, blocchi e travi combuste', 'Livello di crollo del tetto e delle travature dell''atrio', 3),
+(1, 104, '2023-04-10', 'USM', 'Buono', 14.20, 12.90, 'Casa Nozze d''Argento', 'Atrio', 'Flavia', 'Muratura in opus incertum con ricorsi in laterizio', 'Muro perimetrale occidentale dell''atrio', 6),
+(1, 105, '2023-04-18', 'US', 'Ottimo', 13.40, 13.35, 'Casa Nozze d''Argento', 'Atrio', 'Flavia', 'Battuto in cocciopesto con inserti di tessere marmoree bianche', 'Piano pavimentale in uso nel 79 d.C.', 2),
+(1, 106, '2023-04-26', 'USD', 'Buono', 13.35, 12.80, 'Casa Nozze d''Argento', 'Atrio', 'Tardo-repubblicana', 'Taglio rettangolare orientato N-S che intacca il pavimento', 'Fossa per alloggiamento di una conduttura idrica in piombo', 4),
+(1, 107, '2023-04-28', 'US', 'Mediocre', 13.20, 12.80, 'Casa Nozze d''Argento', 'Atrio', 'Tardo-repubblicana', 'Terra sabbiosa scura con frammenti di ceramica a vernice nera', 'Riempimento della fossa US 106', 4),
+(3, 201, '2021-06-01', 'USM', 'Discreto', 8.50, 6.20, 'Terme di Nettuno', 'Calidarium', 'Adrianea', 'Pilastrini in bipedali (suspensurae)', 'Struttura di riscaldamento a ipocausto', 6);
+
+-- ----------------------------------------------------------------------------
+-- 8. UNITA_STRATIGRAFICA_QUADRANTE (Relazione 'localizza' - Dipende da US e QUADRANTE)
+-- ----------------------------------------------------------------------------
+INSERT INTO unita_stratigrafica_quadrante (unita_stratigrafica_id, cantiere_id, quadrante_x, quadrante_y) VALUES
+(1, 1, 1, 1),
+(1, 1, 1, 2),
+(2, 1, 1, 1),
+(2, 1, 2, 1),
+(3, 1, 1, 1),
+(4, 1, 1, 1),
+(5, 1, 1, 1),
+(6, 1, 1, 2);
+
+-- ----------------------------------------------------------------------------
+-- 9. RELAZIONE_STRATIGRAFICA (Harris Matrix - Dipende da UNITA_STRATIGRAFICA)
+-- ----------------------------------------------------------------------------
+INSERT INTO relazione_stratigrafica (us_origine_id, us_destinazione_id, tipo) VALUES
+(1, 2, 'Copre'),              -- US 101 copre US 102
+(2, 3, 'Copre'),              -- US 102 copre US 103
+(3, 5, 'Copre'),              -- Il crollo (103) copre il pavimento (105)
+(5, 4, 'Si appoggia a'),      -- Il pavimento (105) si appoggia al muro (104)
+(6, 5, 'Taglia'),             -- La fossa (106) taglia il pavimento (105)
+(7, 6, 'Riempie'),            -- Il riempimento (107) riempie la fossa (106)
+(3, 4, 'Si appoggia a'),      -- Le macerie (103) si appoggiano al muro (104)
+(2, 1, 'Coperto da');         -- Relazione inversa/corrispondente tra 102 e 101
+
+-- ----------------------------------------------------------------------------
+-- 10. MEDIA (Dipende da UNITA_STRATIGRAFICA)
+-- Rispetta il vincolo CHECK: tipo_disegno presente SOLO se tipo_media = 'DISEGNO'
+-- ----------------------------------------------------------------------------
+INSERT INTO media (unita_stratigrafica_id, uri, data_caricamento, tipo_media, tipo_disegno) VALUES
+(1, '/media/2023/cantiere1/us101_panoramica.jpg', '2023-03-15 11:30:00', 'FOTO', NULL),
+(2, '/media/2023/cantiere1/us102_lapilli_dettaglio.jpg', '2023-03-20 14:15:00', 'FOTO', NULL),
+(3, '/media/2023/cantiere1/us103_video_scavo_crollo.mp4', '2023-04-03 16:45:00', 'VIDEO', NULL),
+(4, '/media/2023/cantiere1/us104_prospetto_muro.dwg', '2023-04-11 09:20:00', 'DISEGNO', 'Sezione'),
+(5, '/media/2023/cantiere1/us105_rilievo_pavimento.pdf', '2023-04-19 10:00:00', 'DISEGNO', 'Pianta'),
+(6, '/media/2023/cantiere1/us106_foto_taglio.jpg', '2023-04-26 12:00:00', 'FOTO', NULL),
+(7, '/media/2023/cantiere1/us107_sezione_fossa.svg', '2023-04-29 15:30:00', 'DISEGNO', 'Sezione'),
+(8, '/media/2021/cantiere3/us201_ipocausto.jpg', '2021-06-02 17:10:00', 'FOTO', NULL);
